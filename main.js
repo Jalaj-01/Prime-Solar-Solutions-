@@ -849,34 +849,72 @@ function initAdminPortal() {
         }
     });
 
-    // Gallery Uploaders
-    document.getElementById("gallery-new-upload").addEventListener("change", function () {
-        if (this.files && this.files.length > 0) {
-            const files = Array.from(this.files);
-            let processed = 0;
-
-            files.forEach(file => {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    const gallery = Database.getGallery();
-                    const newId = "gal-" + Date.now() + Math.random().toString(36).substr(2, 5);
-                    gallery.push({
-                        id: newId,
-                        title: file.name.split(".")[0].replace(/[_-]/g, " "),
-                        desc: "Installed and configured by Prime Solar engineering team.",
-                        image: e.target.result
-                    });
-                    Database.saveGallery(gallery);
-                    processed++;
-
-                    if (processed === files.length) {
-                        renderAdminGallery();
-                        renderPublicSite();
-                    }
-                };
-                reader.readAsDataURL(file);
-            });
+    // Gallery Image Uploader
+    document.getElementById("gallery-image-upload").addEventListener("change", function () {
+        if (this.files && this.files[0]) {
+            fileReader(
+                this.files[0],
+                document.getElementById("gallery-image-preview"),
+                document.getElementById("gallery-image-filename")
+            );
         }
+    });
+
+    // Gallery Form Submit Handler (CRUD - Save or Update)
+    const galleryForm = document.getElementById("admin-gallery-form");
+    const gallerySuccessMsg = document.getElementById("gallery-save-success");
+
+    galleryForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        const editId = document.getElementById("gallery-edit-id").value;
+        const gallery = Database.getGallery();
+
+        const title = document.getElementById("gallery-title").value;
+        const desc = document.getElementById("gallery-desc").value;
+        const previewSrc = document.getElementById("gallery-image-preview").src;
+        const image = previewSrc.startsWith("data:") ? previewSrc : "";
+
+        if (editId) {
+            // Update
+            const index = gallery.findIndex(item => item.id === editId);
+            if (index !== -1) {
+                gallery[index] = {
+                    id: editId,
+                    title,
+                    desc,
+                    image: image || gallery[index].image
+                };
+            }
+        } else {
+            // Create
+            const newItem = {
+                id: "gal-" + Date.now(),
+                title,
+                desc,
+                image
+            };
+            gallery.push(newItem);
+        }
+
+        Database.saveGallery(gallery);
+
+        // Reset form
+        resetGalleryForm();
+
+        // Show status message
+        gallerySuccessMsg.classList.remove("hidden");
+        setTimeout(() => {
+            gallerySuccessMsg.classList.add("hidden");
+        }, 4000);
+
+        renderAdminGallery();
+        renderPublicSite();
+    });
+
+    // Cancel Gallery Edit
+    document.getElementById("btn-cancel-edit-gallery").addEventListener("click", () => {
+        resetGalleryForm();
     });
 
     // Product form Submit CRUD (Add or Update)
@@ -1081,21 +1119,56 @@ function resetProductForm() {
 
 function renderAdminGallery() {
     const gallery = Database.getGallery();
-    const grid = document.getElementById("admin-gallery-grid");
-    grid.innerHTML = "";
+    const tableBody = document.getElementById("admin-gallery-table-body");
+    tableBody.innerHTML = "";
 
     gallery.forEach(item => {
-        const card = document.createElement("div");
-        card.className = "gallery-admin-card";
+        const row = document.createElement("tr");
+        const imgSrc = item.image || PRODUCT_PLACEHOLDER_SVG;
 
-        card.innerHTML = `
-            <img src="${item.image || PRODUCT_PLACEHOLDER_SVG}" alt="${item.title}">
-            <div class="gallery-admin-delete-overlay">
-                <button onclick="deleteGalleryItem('${item.id}')" title="Delete Image"><i class="fa-solid fa-trash"></i></button>
-            </div>
+        row.innerHTML = `
+            <td><img src="${imgSrc}" class="admin-table-img" alt="${item.title}"></td>
+            <td><strong>${item.title}</strong></td>
+            <td>${item.desc}</td>
+            <td>
+                <div class="admin-table-actions">
+                    <button class="btn-icon btn-icon-edit" onclick="editGalleryItem('${item.id}')" title="Edit Item"><i class="fa-solid fa-pen"></i></button>
+                    <button class="btn-icon btn-icon-delete" onclick="deleteGalleryItem('${item.id}')" title="Delete Item"><i class="fa-solid fa-trash"></i></button>
+                </div>
+            </td>
         `;
-        grid.appendChild(card);
+        tableBody.appendChild(row);
     });
+}
+
+function editGalleryItem(id) {
+    const gallery = Database.getGallery();
+    const item = gallery.find(g => g.id === id);
+
+    if (item) {
+        document.getElementById("gallery-edit-id").value = item.id;
+        document.getElementById("gallery-title").value = item.title;
+        document.getElementById("gallery-desc").value = item.desc;
+
+        document.getElementById("btn-cancel-edit-gallery").classList.remove("hidden");
+        document.getElementById("gallery-form-title").textContent = "Modify Installation Project";
+        document.getElementById("gallery-form-desc").textContent = `Editing project: ${item.title}. You can rewrite descriptions or replace the showcase photograph.`;
+        document.getElementById("btn-save-gallery").innerHTML = `<i class="fa-solid fa-floppy-disk"></i> Update Project`;
+
+        const previewImg = document.getElementById("gallery-image-preview");
+        if (item.image) {
+            previewImg.src = item.image;
+            previewImg.classList.remove("hidden");
+            document.getElementById("gallery-image-filename").textContent = "Existing photo loaded";
+        } else {
+            previewImg.classList.add("hidden");
+            previewImg.src = "";
+            document.getElementById("gallery-image-filename").textContent = "No photo attached";
+        }
+
+        // Scroll to editor card form
+        document.querySelector(".gallery-editor-card").scrollIntoView({ behavior: "smooth" });
+    }
 }
 
 function deleteGalleryItem(id) {
@@ -1107,6 +1180,20 @@ function deleteGalleryItem(id) {
         renderAdminGallery();
         renderPublicSite();
     }
+}
+
+function resetGalleryForm() {
+    document.getElementById("admin-gallery-form").reset();
+    document.getElementById("gallery-edit-id").value = "";
+    document.getElementById("btn-cancel-edit-gallery").classList.add("hidden");
+    document.getElementById("gallery-form-title").textContent = "Add Installation Project";
+    document.getElementById("gallery-form-desc").textContent = "Provide project details (location/capacity), subtitle description, and images to display in the past works portfolio showcase.";
+    document.getElementById("btn-save-gallery").innerHTML = `<i class="fa-solid fa-circle-plus"></i> Save Project`;
+
+    const previewImg = document.getElementById("gallery-image-preview");
+    previewImg.classList.add("hidden");
+    previewImg.src = "";
+    document.getElementById("gallery-image-filename").textContent = "No file selected";
 }
 
 function renderAdminLeads() {
