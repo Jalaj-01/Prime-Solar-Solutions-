@@ -46,7 +46,5 @@ Make sure you have [Node.js](https://nodejs.org/) installed.
    ```
    Open your browser and navigate to the address shown in your terminal (typically `http://localhost:5173`).
 
-## 🔐 Staff Login Credentials
-*   **Authorized Emails**: `divyansh62soni@gmail.com`, `jalajgupta550@gmail.com`
-*   **Portal Password**: `Divyansh@primesolarsolutions`
+## 🔐 Staff Login 
 *   **Access Point**: Click the lock icon next to **Staff Portal** in the bottom footer, or append `#/admin` to the URL.
