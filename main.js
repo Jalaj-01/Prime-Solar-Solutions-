@@ -261,6 +261,7 @@ function initRouter() {
         }
     };
 
+    window.handleRoute = handleRoute;
     window.addEventListener("hashchange", handleRoute);
     window.addEventListener("load", handleRoute);
 
@@ -698,7 +699,9 @@ function initAdminPortal() {
                 // Success: Reload routing to dashboard
                 window.location.hash = "#/admin";
                 renderPublicSite();
-                initRouter();
+                if (typeof window.handleRoute === "function") {
+                    window.handleRoute();
+                }
             } else {
                 document.getElementById("auth-error-text").textContent = result.message;
                 authErrorMsg.classList.remove("hidden");
@@ -728,7 +731,9 @@ function initAdminPortal() {
             authErrorMsg.classList.add("hidden");
             window.location.hash = "#/admin";
             renderPublicSite();
-            initRouter();
+            if (typeof window.handleRoute === "function") {
+                window.handleRoute();
+            }
         } else {
             document.getElementById("auth-error-text").textContent = result.message;
             authErrorMsg.classList.remove("hidden");
@@ -750,7 +755,9 @@ function initAdminPortal() {
             // Success: Reload routing to dashboard
             window.location.hash = "#/admin";
             renderPublicSite();
-            initRouter();
+            if (typeof window.handleRoute === "function") {
+                window.handleRoute();
+            }
         } else {
             document.getElementById("auth-error-text").textContent = result.message;
             authErrorMsg.classList.remove("hidden");
