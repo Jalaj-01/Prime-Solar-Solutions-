@@ -106,29 +106,25 @@
                     <!-- Calculator Inputs -->
                     <div class="calc-inputs-card card animate-on-scroll">
                         <div class="input-group">
-                            <label for="currency-select">Currency</label>
-                            <select id="currency-select" class="form-control">
-                                <option value="INR">INR (₹) - Rupees</option>
-                                <option value="USD">USD ($) - Dollars</option>
-                            </select>
+                            <div class="label-row" style="margin-bottom: 8px;">
+                                <label for="bill-input-num">Monthly Electric Bill</label>
+                            </div>
+                            <div class="calc-input-wrapper">
+                                <span class="calc-input-addon">₹</span>
+                                <input type="number" id="bill-input-num" value="5000" min="1" class="calc-num-input" placeholder="Amount">
+                            </div>
+                            <input type="range" id="bill-input" min="1000" max="50000" step="500" value="5000" class="slider-input" style="margin-top: 12px;">
                         </div>
 
                         <div class="input-group">
-                            <div class="label-row">
-                                <label for="bill-input">Monthly Electric Bill</label>
-                                <span class="input-val-display" id="bill-val-display">₹5,000</span>
+                            <div class="label-row" style="margin-bottom: 8px;">
+                                <label for="area-input-num">Available Roof Area</label>
                             </div>
-                            <input type="range" id="bill-input" min="1000" max="50000" step="500" value="5000"
-                                class="slider-input">
-                        </div>
-
-                        <div class="input-group">
-                            <div class="label-row">
-                                <label for="area-input">Available Roof Area (sq. ft.)</label>
-                                <span class="input-val-display" id="area-val-display">400 sq. ft.</span>
+                            <div class="calc-input-wrapper">
+                                <input type="number" id="area-input-num" value="400" min="1" class="calc-num-input" placeholder="Size">
+                                <span class="calc-input-addon suffix">sq. ft.</span>
                             </div>
-                            <input type="range" id="area-input" min="100" max="5000" step="50" value="400"
-                                class="slider-input">
+                            <input type="range" id="area-input" min="100" max="5000" step="50" value="400" class="slider-input" style="margin-top: 12px;">
                         </div>
 
                         <div class="input-group">

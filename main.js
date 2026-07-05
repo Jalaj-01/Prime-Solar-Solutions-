@@ -339,63 +339,55 @@ function initMobileNav() {
 
 // 7. INTERACTIVE SOLAR ENERGY CALCULATOR
 function initCalculator() {
-    const currencySelect = document.getElementById("currency-select");
-    const billInput = document.getElementById("bill-input");
-    const areaInput = document.getElementById("area-input");
+    const billSlider = document.getElementById("bill-input");
+    const billNum = document.getElementById("bill-input-num");
+    const areaSlider = document.getElementById("area-input");
+    const areaNum = document.getElementById("area-input-num");
     const sunHours = document.getElementById("sun-hours");
-
-    const billValDisplay = document.getElementById("bill-val-display");
-    const areaValDisplay = document.getElementById("area-val-display");
 
     // Recalculate outputs
     const updateCalculator = () => {
-        const currency = currencySelect.value;
-        const bill = parseFloat(billInput.value);
-        const area = parseFloat(areaInput.value);
+        let bill = parseFloat(billNum.value);
+        let area = parseFloat(areaNum.value);
         const dailySunHours = parseFloat(sunHours.value);
 
-        // UI Slider value display updates
-        const symbol = currency === "INR" ? "₹" : "$";
-        billValDisplay.textContent = `${symbol}${bill.toLocaleString(currency === "INR" ? "en-IN" : "en-US")}`;
-        areaValDisplay.textContent = `${area} sq. ft.`;
+        if (isNaN(bill) || bill <= 0) bill = 0;
+        if (isNaN(area) || area <= 0) area = 0;
 
         // Mathematical Solar Algorithms
-        // Assumptions:
-        // Average unit price: INR = ₹8/kWh, USD = $0.15/kWh
-        const kwhPrice = currency === "INR" ? 8 : 0.15;
+        // Assumptions: Average unit price in India = ₹8/kWh
+        const symbol = "₹";
+        const kwhPrice = 8;
         const monthlyKwh = bill / kwhPrice;
 
         // Solar system sizing formula: (Monthly kWh / 30 days) / (Sun Hours * efficiency factor (approx 75% system yield))
-        let recommendedSizekW = (monthlyKwh / 30) / (dailySunHours * 0.75);
-        recommendedSizekW = Math.round(recommendedSizekW * 10) / 10; // Round to 1 decimal
-
-        // Minimum system threshold
-        if (recommendedSizekW < 1) recommendedSizekW = 1.0;
+        let recommendedSizekW = 0;
+        if (bill > 0) {
+            recommendedSizekW = (monthlyKwh / 30) / (dailySunHours * 0.75);
+            recommendedSizekW = Math.round(recommendedSizekW * 10) / 10; // Round to 1 decimal
+            if (recommendedSizekW < 1) recommendedSizekW = 1.0;
+        }
 
         // Space limit: A typical 1 kW system requires about 80-100 sq. ft. of roof space
         const maximumSpacekW = Math.floor(area / 90);
         let optimalSizekW = recommendedSizekW;
-        let warningText = "";
 
         if (optimalSizekW > maximumSpacekW) {
-            optimalSizekW = maximumSpacekW > 0 ? maximumSpacekW : 1;
+            optimalSizekW = maximumSpacekW > 0 ? maximumSpacekW : 0;
         }
 
         // Panel calculation: standard panel is 330W (0.33 kW)
-        const panelCount = Math.ceil(optimalSizekW / 0.33);
+        const panelCount = optimalSizekW > 0 ? Math.ceil(optimalSizekW / 0.33) : 0;
 
         // Savings: Solar offset is ~85% of monthly bill if size is sufficient
-        const savingsFactor = optimalSizekW >= recommendedSizekW ? 0.88 : (optimalSizekW / recommendedSizekW) * 0.88;
+        const savingsFactor = (optimalSizekW > 0 && recommendedSizekW > 0) ? (optimalSizekW >= recommendedSizekW ? 0.88 : (optimalSizekW / recommendedSizekW) * 0.88) : 0;
         const monthlySavings = Math.round(bill * savingsFactor);
         const lifetimeSavings = monthlySavings * 12 * 25; // 25 year warranty span
 
         // Carbon Footprint Offset: 1 kW solar generates ~1,200 kWh clean power/year.
-        // Each kWh offsets ~0.85 kg (0.00085 tons) of coal grid CO2.
-        // Annual CO2 Saved = optimalSizekW * 1.2 metric tons of CO2.
         const annualCo2Saved = Math.round((optimalSizekW * 1.2) * 10) / 10;
 
         // Tree Equivalent: 1 mature tree absorbs ~22 kg (0.022 tons) of CO2/year.
-        // Trees Equivalent = Annual CO2 Saved (kg) / 22
         const treesEquivalent = Math.round((annualCo2Saved * 1000) / 22);
 
         // Render Outputs in DOM
@@ -407,24 +399,31 @@ function initCalculator() {
         document.getElementById("res-trees-equivalent").textContent = `${treesEquivalent} Trees`;
     };
 
-    // Attach Event Listeners
-    billInput.addEventListener("input", updateCalculator);
-    areaInput.addEventListener("input", updateCalculator);
-    currencySelect.addEventListener("change", () => {
-        // Adjust slider bounds for currency scale difference
-        if (currencySelect.value === "USD") {
-            billInput.min = "20";
-            billInput.max = "1000";
-            billInput.step = "10";
-            billInput.value = "150";
-        } else {
-            billInput.min = "1000";
-            billInput.max = "50000";
-            billInput.step = "500";
-            billInput.value = "5000";
+    // Attach Event Listeners (Dual Synchronization)
+    billSlider.addEventListener("input", function () {
+        billNum.value = this.value;
+        updateCalculator();
+    });
+    billNum.addEventListener("input", function () {
+        let val = parseFloat(this.value);
+        if (!isNaN(val)) {
+            billSlider.value = val;
         }
         updateCalculator();
     });
+
+    areaSlider.addEventListener("input", function () {
+        areaNum.value = this.value;
+        updateCalculator();
+    });
+    areaNum.addEventListener("input", function () {
+        let val = parseFloat(this.value);
+        if (!isNaN(val)) {
+            areaSlider.value = val;
+        }
+        updateCalculator();
+    });
+
     sunHours.addEventListener("change", updateCalculator);
 
     // Initial Trigger

@@ -621,6 +621,85 @@ body.light-theme .form-control {
     box-shadow: 0 0 0 3px var(--color-solar-glow);
 }
 
+.calc-input-wrapper {
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--card-border);
+    border-radius: var(--border-radius-sm);
+    transition: var(--transition-smooth);
+    overflow: hidden;
+    width: 100%;
+}
+
+body.light-theme .calc-input-wrapper {
+    background: #f8fafc;
+    border-color: #cbd5e1;
+}
+
+.calc-input-wrapper:hover {
+    border-color: rgba(245, 158, 11, 0.4);
+}
+
+.calc-input-wrapper:focus-within {
+    border-color: var(--color-solar);
+    box-shadow: 0 0 0 3px var(--color-solar-glow);
+    background: var(--bg-secondary);
+}
+
+body.light-theme .calc-input-wrapper:focus-within {
+    background: #ffffff;
+}
+
+.calc-input-addon {
+    color: var(--color-solar);
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 1.25rem;
+    padding: 10px 20px;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+body.light-theme .calc-input-addon {
+    color: #d97706; /* Rich dark amber in light mode */
+}
+
+.calc-input-addon.suffix {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    padding: 10px 20px;
+}
+
+.calc-num-input {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    flex: 1;
+    width: 100%;
+    text-align: right;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 1.3rem;
+    color: var(--text-primary);
+    padding: 12px 20px;
+    outline: none;
+}
+
+/* Hide spinner arrows on number inputs */
+.calc-num-input::-webkit-outer-spin-button,
+.calc-num-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+.calc-num-input {
+    -moz-appearance: textfield;
+}
+
 .calc-results-card {
     display: flex;
     flex-direction: column;
