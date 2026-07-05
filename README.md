@@ -9,8 +9,8 @@ A premium, fully responsive single-page web application (SPA) designed for a sol
 *   **SVG Energy Flow Diagram**: An animated, responsive SVG telemetry flow illustrating power generation from the Sun ➔ Panels ➔ Inverter ➔ Battery ➔ Home, triggering active path glow animations when scrolled into view.
 *   **Scroll-Spy Navigation**: Header navigation links dynamically update highlights as you scroll down through landing sections.
 *   **Secure Staff Admin Portal**: 
-    *   Auth gate restricting access exclusively to authorized emails (`divyansh62soni@gmail.com`, `jalajgupta550@gmail.com`).
-    *   Supported Auth flows: Google OAuth (mock accounts chooser overlay) and Password validation (`Divyansh@primesolarsolutions`).
+    *   Auth gate restricting access exclusively to authorized emails (`divyansh62soni@gmail.com`, ).
+    *   Supported Auth flows: Google OAuth (mock accounts chooser overlay) and Password validation .
     *   Dynamic Admin Navigation hiding header controls from normal visitors, and auto-hiding the footer inside dashboard routes.
     *   **Content Management Dashboard (CRUD)**: Update business coordinates (phone, email, addresses), manage the inventory catalog (with base64 file upload conversion for equipment images), edit project showcase portfolios, and view submitted callback lead intakes.
 
