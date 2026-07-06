@@ -5,10 +5,14 @@ const DEFAULT_SETTINGS = {
     brandName: "Prime Solar Solutions",
     email: "divyansh62soni@gmail.com",
     phone: "+91 82239 13807",
-    address: "102 Solar Arcade, Green Energy Park, India",
+    address: "house number 3, sai vatika, behind hotel grand palace, Sagar, Madhya Pradesh 470002",
     heroTitle: "Empower Your Home with Clean Solar Energy",
     heroSubtitle: "Cut your electricity bills, reduce your carbon footprint, and secure energy independence with India's most trusted solar installer.",
-    heroBg: "assets/hero_solar_panels.png"
+    heroBg: "assets/hero_solar_panels.png",
+    partnerName: "APN Solar",
+    mapsLink: "https://share.google/ZxaFxv0ao1Kl1I5G1",
+    subsidyRate: 30000,
+    subsidyCap: 78000
 };
 
 // Authentication Configuration
@@ -173,10 +177,41 @@ document.addEventListener("DOMContentLoaded", () => {
         Database.saveGallery(DEFAULT_GALLERY);
     }
 
-    // Self-healing check for brand name updates
+    // Self-healing check for brand name and settings updates
     let settings = Database.getSettings();
+    let updated = false;
+
     if (settings.brandName === "Prime Solar") {
         settings.brandName = "Prime Solar Solutions";
+        updated = true;
+    }
+
+    if (!settings.address || settings.address.includes("102 Solar Arcade") || settings.address.includes("Green Energy Park")) {
+        settings.address = "house number 3, sai vatika, behind hotel grand palace, Sagar, Madhya Pradesh 470002";
+        updated = true;
+    }
+
+    if (!settings.partnerName) {
+        settings.partnerName = "APN Solar";
+        updated = true;
+    }
+
+    if (!settings.mapsLink) {
+        settings.mapsLink = "https://share.google/ZxaFxv0ao1Kl1I5G1";
+        updated = true;
+    }
+
+    if (settings.subsidyRate === undefined) {
+        settings.subsidyRate = 30000;
+        updated = true;
+    }
+
+    if (settings.subsidyCap === undefined) {
+        settings.subsidyCap = 78000;
+        updated = true;
+    }
+
+    if (updated) {
         Database.saveSettings(settings);
     }
 
@@ -583,6 +618,44 @@ function renderPublicSite() {
     document.getElementById("contact-address-val").textContent = settings.address;
     document.getElementById("footer-address-val").textContent = settings.address;
 
+    // Partner Brand Name
+    const pName = settings.partnerName || "APN Solar";
+    const heroPartner = document.getElementById("hero-partner-name");
+    const footerPartner = document.getElementById("footer-partner-name");
+    if (heroPartner) heroPartner.textContent = pName;
+    if (footerPartner) footerPartner.textContent = pName;
+
+    // Google Maps Link
+    const mapsUrl = settings.mapsLink || "https://share.google/ZxaFxv0ao1Kl1I5G1";
+    const contactAddressLink = document.getElementById("contact-address-val").closest("a");
+    const footerAddressLink = document.getElementById("footer-address-link");
+    if (contactAddressLink) contactAddressLink.href = mapsUrl;
+    if (footerAddressLink) footerAddressLink.href = mapsUrl;
+
+    // Government Solar Subsidy rates
+    const sRate = settings.subsidyRate !== undefined ? settings.subsidyRate : 30000;
+    const sCap = settings.subsidyCap !== undefined ? settings.subsidyCap : 78000;
+
+    const card1Rate = document.getElementById("subsidy-card1-rate");
+    const card1DescRate = document.getElementById("subsidy-card1-desc-rate");
+    const card1Max = document.getElementById("subsidy-card1-max");
+    const card2Cap = document.getElementById("subsidy-card2-cap");
+    const card2DescCap = document.getElementById("subsidy-card2-desc-cap");
+    const card2Cfa = document.getElementById("subsidy-card2-cfa");
+    const card3Cap = document.getElementById("subsidy-card3-cap");
+    const card3DescCap = document.getElementById("subsidy-card3-desc-cap");
+    const card3Max = document.getElementById("subsidy-card3-max");
+
+    if (card1Rate) card1Rate.textContent = sRate.toLocaleString();
+    if (card1DescRate) card1DescRate.textContent = sRate.toLocaleString();
+    if (card1Max) card1Max.textContent = (sRate * 2).toLocaleString();
+    if (card2Cap) card2Cap.textContent = sCap.toLocaleString();
+    if (card2DescCap) card2DescCap.textContent = sCap.toLocaleString();
+    if (card2Cfa) card2Cfa.textContent = sCap.toLocaleString();
+    if (card3Cap) card3Cap.textContent = sCap.toLocaleString();
+    if (card3DescCap) card3DescCap.textContent = sCap.toLocaleString();
+    if (card3Max) card3Max.textContent = sCap.toLocaleString();
+
     // Hero Text contents
     document.getElementById("hero-title").textContent = settings.heroTitle;
     document.getElementById("hero-subtitle").textContent = settings.heroSubtitle;
@@ -797,6 +870,10 @@ function initAdminPortal() {
             email: document.getElementById("settings-email").value,
             phone: document.getElementById("settings-phone").value,
             address: document.getElementById("settings-address").value,
+            partnerName: document.getElementById("settings-partner-name").value,
+            mapsLink: document.getElementById("settings-maps-link").value,
+            subsidyRate: parseInt(document.getElementById("settings-subsidy-rate").value) || 30000,
+            subsidyCap: parseInt(document.getElementById("settings-subsidy-cap").value) || 78000,
             heroTitle: document.getElementById("settings-hero-title").value,
             heroSubtitle: document.getElementById("settings-hero-subtitle").value,
             heroBg: document.getElementById("settings-hero-bg-preview").src // Loaded base64
@@ -1021,6 +1098,10 @@ function renderAdminSettings() {
     document.getElementById("settings-email").value = settings.email;
     document.getElementById("settings-phone").value = settings.phone;
     document.getElementById("settings-address").value = settings.address;
+    document.getElementById("settings-partner-name").value = settings.partnerName || "APN Solar";
+    document.getElementById("settings-maps-link").value = settings.mapsLink || "";
+    document.getElementById("settings-subsidy-rate").value = settings.subsidyRate !== undefined ? settings.subsidyRate : 30000;
+    document.getElementById("settings-subsidy-cap").value = settings.subsidyCap !== undefined ? settings.subsidyCap : 78000;
     document.getElementById("settings-hero-title").value = settings.heroTitle;
     document.getElementById("settings-hero-subtitle").value = settings.heroSubtitle;
 

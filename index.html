@@ -60,7 +60,10 @@
             <div class="hero-overlay"></div>
             <div class="container hero-container">
                 <div class="hero-content animate-on-scroll">
-                    <span class="badge"><i class="fa-solid fa-solar-panel"></i> Go Green. Save Green.</span>
+                    <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 20px;">
+                        <span class="badge"><i class="fa-solid fa-solar-panel"></i> Go Green. Save Green.</span>
+                        <span class="badge" style="background: rgba(245, 158, 11, 0.12); color: var(--color-solar); border: 1px solid rgba(245, 158, 11, 0.25);"><i class="fa-solid fa-handshake"></i> Authorized <span id="hero-partner-name">APN Solar</span> Partner</span>
+                    </div>
                     <h1 id="hero-title">Empower Your Home with Clean Solar Energy</h1>
                     <p id="hero-subtitle">Cut your electricity bills, reduce your carbon footprint, and secure energy
                         independence with India's most trusted solar installer.</p>
@@ -186,6 +189,89 @@
                         <div class="calc-cta-row">
                             <a href="#contact" class="btn btn-primary btn-block">Get an Installation Quote</a>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Government Solar Subsidy Section -->
+        <section id="subsidy" class="subsidy-section section-padding bg-dim">
+            <div class="container">
+                <div class="section-header text-center animate-on-scroll">
+                    <h2>PM Surya Ghar Yojana</h2>
+                    <p>Government of India Rooftop Solar Subsidy (CFA) Scheme. Get maximum direct subsidy back into your bank account.</p>
+                </div>
+
+                <div class="subsidy-grid">
+                    <!-- Card 1: 1-2 kW -->
+                    <div class="subsidy-card card animate-on-scroll">
+                        <div class="subsidy-icon-wrapper"><i class="fa-solid fa-house-chimney-window"></i></div>
+                        <h3>Up to 2 kW System</h3>
+                        <div class="subsidy-amount">₹<span id="subsidy-card1-rate">30,000</span> / kW</div>
+                        <p>Direct subsidy of <strong>₹<span id="subsidy-card1-desc-rate">30,000</span> per kilowatt</strong> for system capacities up to 2 kW. Ideal for small-scale residential setups.</p>
+                        <ul class="subsidy-list">
+                            <li><i class="fa-solid fa-circle-check"></i> Max Subsidy: ₹<span id="subsidy-card1-max">60,000</span></li>
+                            <li><i class="fa-solid fa-circle-check"></i> Best for: 1-2 AC / Fan / Lights load</li>
+                        </ul>
+                    </div>
+
+                    <!-- Card 2: 3 kW -->
+                    <div class="subsidy-card card animate-on-scroll featured-card">
+                        <div class="featured-badge">Most Popular</div>
+                        <div class="subsidy-icon-wrapper"><i class="fa-solid fa-house-laptop"></i></div>
+                        <h3>3 kW Solar System</h3>
+                        <div class="subsidy-amount">₹<span id="subsidy-card2-cap">78,000</span> Total</div>
+                        <p>Direct fixed subsidy of <strong>₹<span id="subsidy-card2-desc-cap">78,000</span></strong>. Provides the highest return on investment for standard double-story homes.</p>
+                        <ul class="subsidy-list">
+                            <li><i class="fa-solid fa-circle-check"></i> CFA Subsidy: ₹<span id="subsidy-card2-cfa">78,000</span></li>
+                            <li><i class="fa-solid fa-circle-check"></i> Best for: Heavy residential appliances load</li>
+                        </ul>
+                    </div>
+
+                    <!-- Card 3: >3 kW -->
+                    <div class="subsidy-card card animate-on-scroll">
+                        <div class="subsidy-icon-wrapper"><i class="fa-solid fa-building-user"></i></div>
+                        <h3>Above 3 kW System</h3>
+                        <div class="subsidy-amount">₹<span id="subsidy-card3-cap">78,000</span> Capped</div>
+                        <p>Direct subsidy capped at a maximum of <strong>₹<span id="subsidy-card3-desc-cap">78,000</span></strong>. Best for larger villas, bungalows, and heavy commercial arrays.</p>
+                        <ul class="subsidy-list">
+                            <li><i class="fa-solid fa-circle-check"></i> Max Subsidy: ₹<span id="subsidy-card3-max">78,000</span></li>
+                            <li><i class="fa-solid fa-circle-check"></i> Best for: 3-phase high capacity loads</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="subsidy-flow animate-on-scroll">
+                    <h3>4 Steps to Claim Your Solar Subsidy</h3>
+                    <div class="subsidy-steps-grid">
+                        <div class="step-box">
+                            <span class="step-num">1</span>
+                            <h4>Apply Online</h4>
+                            <p>Register on the PM-Surya Ghar National Portal with your electricity connection details.</p>
+                        </div>
+                        <div class="step-box">
+                            <span class="step-num">2</span>
+                            <h4>Feasibility & Install</h4>
+                            <p>Get approval from your local DISCOM, and we will install solar panels from the Approved List (ALMM).</p>
+                        </div>
+                        <div class="step-box">
+                            <span class="step-num">3</span>
+                            <h4>Net-Meter & Inspect</h4>
+                            <p>Your local electricity board will inspect the installation and fit a bi-directional net-meter.</p>
+                        </div>
+                        <div class="step-box">
+                            <span class="step-num">4</span>
+                            <h4>Subsidy Credited</h4>
+                            <p>Submit connection details and claim request. Subsidy gets directly deposited into your bank account within 30 days!</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="subsidy-cta animate-on-scroll">
+                    <p>We are a certified channel partner. We handle all paperwork and applications for you!</p>
+                    <div class="subsidy-buttons">
+                        <a href="#contact" class="btn btn-primary btn-glow">Help Me Apply for Subsidy</a>
+                        <a href="https://pmsuryaghar.gov.in" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">Visit Official Gov Portal <i class="fa-solid fa-up-right-from-square" style="font-size: 0.8rem; margin-left: 6px;"></i></a>
                     </div>
                 </div>
             </div>
@@ -363,8 +449,10 @@
                                 <i class="fa-solid fa-location-dot"></i>
                                 <div>
                                     <span class="info-label">Headquarters</span>
-                                    <span class="info-link" id="contact-address-val">102 Solar Arcade, Green Energy
-                                        Park, India</span>
+                                    <a href="https://share.google/ZxaFxv0ao1Kl1I5G1" target="_blank" rel="noopener noreferrer" class="info-link" style="display: block;">
+                                        <span id="contact-address-val">102 Solar Arcade, Green Energy Park, India</span>
+                                        <span style="display: block; font-size: 0.75rem; color: var(--color-solar); margin-top: 4px; text-decoration: underline;"><i class="fa-solid fa-up-right-from-square"></i> View on Google Maps</span>
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -536,6 +624,31 @@
                                 <div class="form-group">
                                     <label for="settings-address">Office Address</label>
                                     <input type="text" id="settings-address" class="form-control" required>
+                                </div>
+                            </div>
+
+                            <hr class="calc-divider">
+
+                            <h3>Partner & Location Map Links</h3>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="settings-partner-name">Partner Brand Name</label>
+                                    <input type="text" id="settings-partner-name" class="form-control" required placeholder="e.g. APN Solar">
+                                </div>
+                                <div class="form-group">
+                                    <label for="settings-maps-link">Google Maps Share Link</label>
+                                    <input type="url" id="settings-maps-link" class="form-control" required placeholder="e.g. https://share.google/ZxaFxv0ao1Kl1I5G1">
+                                </div>
+                            </div>
+
+                            <div class="form-row" style="margin-top: 16px;">
+                                <div class="form-group">
+                                    <label for="settings-subsidy-rate">Subsidy Rate per kW (up to 2 kW) (₹)</label>
+                                    <input type="number" id="settings-subsidy-rate" class="form-control" required placeholder="e.g. 30000">
+                                </div>
+                                <div class="form-group">
+                                    <label for="settings-subsidy-cap">Capped Subsidy (3 kW & above) (₹)</label>
+                                    <input type="number" id="settings-subsidy-cap" class="form-control" required placeholder="e.g. 78000">
                                 </div>
                             </div>
 
@@ -772,6 +885,7 @@
                     <i class="fa-solid fa-sun logo-icon"></i>
                     <span id="footer-brand-name">Prime Solar Solutions</span>
                 </a>
+                <p style="margin: 8px 0; font-size: 0.85rem; color: var(--color-solar); font-weight: 600;"><i class="fa-solid fa-handshake"></i> Authorized Partner with APN Solar</p>
                 <p>Leading the conversion to sustainable green solar networks across residential, farming, and
                     commercial properties.</p>
                 <div class="social-links">
@@ -799,8 +913,7 @@
                         id="footer-email-val">divyansh62soni@gmail.com</a></p>
                 <p><i class="fa-solid fa-phone text-amber"></i> <a href="tel:+918223913807" id="footer-phone-val">+91
                         82239 13807</a></p>
-                <p><i class="fa-solid fa-location-dot text-amber"></i> <span id="footer-address-val">102 Solar Arcade,
-                        Green Energy Park, India</span></p>
+                <p><i class="fa-solid fa-location-dot text-amber"></i> <a href="https://share.google/ZxaFxv0ao1Kl1I5G1" target="_blank" rel="noopener noreferrer" id="footer-address-link" style="text-decoration: underline;"><span id="footer-address-val">102 Solar Arcade, Green Energy Park, India</span></a></p>
             </div>
         </div>
         <div class="footer-bottom">

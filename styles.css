@@ -2080,3 +2080,184 @@ body.light-theme .admin-nav-link.active {
         transform: scale(1);
     }
 }
+
+/* Subsidy Section Styles */
+.subsidy-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 32px;
+    margin-bottom: 56px;
+}
+
+.subsidy-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 40px 32px;
+    border: 1px solid var(--card-border);
+    border-radius: var(--border-radius-md);
+    transition: var(--transition-smooth);
+}
+
+.subsidy-card:hover {
+    transform: translateY(-8px);
+    border-color: rgba(245, 158, 11, 0.4);
+    box-shadow: var(--card-shadow), var(--accent-glow);
+}
+
+.subsidy-card.featured-card {
+    border-color: var(--color-solar);
+    background: linear-gradient(180deg, rgba(245, 158, 11, 0.05) 0%, rgba(17, 24, 39, 0.8) 100%);
+    box-shadow: 0 10px 40px rgba(245, 158, 11, 0.08);
+}
+
+body.light-theme .subsidy-card.featured-card {
+    background: linear-gradient(180deg, rgba(245, 158, 11, 0.08) 0%, rgba(255, 255, 255, 0.95) 100%);
+}
+
+.featured-badge {
+    position: absolute;
+    top: -12px;
+    background: var(--color-solar-gradient);
+    color: #ffffff;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 4px 16px;
+    border-radius: 20px;
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+}
+
+.subsidy-icon-wrapper {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background: rgba(245, 158, 11, 0.1);
+    color: var(--color-solar);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    margin-bottom: 24px;
+}
+
+.subsidy-card h3 {
+    font-size: 1.4rem;
+    margin-bottom: 12px;
+}
+
+.subsidy-amount {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--color-solar);
+    margin-bottom: 20px;
+}
+
+.subsidy-card p {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    margin-bottom: 24px;
+    line-height: 1.5;
+}
+
+.subsidy-list {
+    list-style: none;
+    padding: 0;
+    width: 100%;
+    text-align: left;
+    margin-top: auto;
+}
+
+.subsidy-list li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.9rem;
+    color: var(--text-primary);
+    margin-bottom: 10px;
+}
+
+.subsidy-list li i {
+    color: var(--color-eco);
+}
+
+/* Steps Timeline */
+.subsidy-flow {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--border-radius-md);
+    padding: 48px 40px;
+    margin-bottom: 56px;
+    text-align: center;
+}
+
+.subsidy-flow h3 {
+    font-size: 1.6rem;
+    margin-bottom: 36px;
+}
+
+.subsidy-steps-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 32px;
+    position: relative;
+}
+
+.step-box {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.step-num {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--color-solar-gradient);
+    color: #ffffff;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+    box-shadow: 0 4px 12px var(--color-solar-glow);
+}
+
+.step-box h4 {
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+}
+
+.step-box p {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    line-height: 1.4;
+    text-align: center;
+}
+
+/* Call to Action */
+.subsidy-cta {
+    text-align: center;
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.subsidy-cta p {
+    font-size: 1.15rem;
+    color: var(--text-primary);
+    margin-bottom: 24px;
+}
+
+.subsidy-buttons {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
