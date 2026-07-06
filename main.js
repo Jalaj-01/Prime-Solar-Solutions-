@@ -1221,6 +1221,22 @@ function renderAdminPanel() {
     renderAdminProducts();
     renderAdminGallery();
     renderAdminLeads();
+
+    // Update database connection status badge in admin header
+    const dbBadge = document.querySelector(".db-status-badge");
+    if (dbBadge) {
+        if (supabaseClient) {
+            dbBadge.innerHTML = `<i class="fa-solid fa-cloud"></i> Database: Supabase Cloud`;
+            dbBadge.style.backgroundColor = "rgba(16, 185, 129, 0.12)";
+            dbBadge.style.color = "#10b981";
+            dbBadge.style.borderColor = "rgba(16, 185, 129, 0.25)";
+        } else {
+            dbBadge.innerHTML = `<i class="fa-solid fa-database"></i> Database: LocalStorage`;
+            dbBadge.style.backgroundColor = "rgba(245, 158, 11, 0.12)";
+            dbBadge.style.color = "var(--color-solar)";
+            dbBadge.style.borderColor = "rgba(245, 158, 11, 0.25)";
+        }
+    }
 }
 
 function renderAdminSettings() {
