@@ -1,5 +1,23 @@
 // Prime Solar Solutions - Application Logic
 
+// Supabase Connection Settings
+// Fill in your project credentials from your Supabase Dashboard -> Project Settings -> API
+const SUPABASE_URL = ""; 
+const SUPABASE_ANON_KEY = ""; 
+
+let supabase = null;
+if (SUPABASE_URL && SUPABASE_ANON_KEY) {
+    try {
+        if (typeof window.supabase !== 'undefined' && typeof window.supabase.createClient === 'function') {
+            supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        } else if (typeof supabase !== 'undefined' && typeof supabase.createClient === 'function') {
+            supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        }
+    } catch (e) {
+        console.error("Failed to initialize Supabase client:", e);
+    }
+}
+
 // 1. MOCK DATA DEFINITIONS (Default database state)
 const DEFAULT_SETTINGS = {
     brandName: "Prime Solar Solutions",
@@ -123,8 +141,16 @@ class Database {
         return data ? JSON.parse(data) : DEFAULT_SETTINGS;
     }
 
-    static saveSettings(settings) {
+    static async saveSettings(settings) {
         localStorage.setItem("prime_solar_settings", JSON.stringify(settings));
+        if (supabase) {
+            try {
+                const payload = { id: 'default', ...settings };
+                await supabase.from('settings').upsert(payload);
+            } catch (e) {
+                console.error("Failed to save settings to Supabase:", e);
+            }
+        }
     }
 
     static getProducts() {
@@ -132,8 +158,24 @@ class Database {
         return data ? JSON.parse(data) : DEFAULT_PRODUCTS;
     }
 
-    static saveProducts(products) {
+    static async saveProducts(products) {
         localStorage.setItem("prime_solar_products", JSON.stringify(products));
+        if (supabase) {
+            try {
+                if (products.length > 0) {
+                    await supabase.from('products').upsert(products);
+                }
+                const ids = products.map(p => p.id);
+                if (ids.length > 0) {
+                    const idList = ids.map(id => `'${id}'`).join(',');
+                    await supabase.from('products').delete().filter('id', 'not.in', `(${idList})`);
+                } else {
+                    await supabase.from('products').delete().neq('id', '');
+                }
+            } catch (e) {
+                console.error("Failed to save products to Supabase:", e);
+            }
+        }
     }
 
     static getGallery() {
@@ -141,8 +183,24 @@ class Database {
         return data ? JSON.parse(data) : DEFAULT_GALLERY;
     }
 
-    static saveGallery(gallery) {
+    static async saveGallery(gallery) {
         localStorage.setItem("prime_solar_gallery", JSON.stringify(gallery));
+        if (supabase) {
+            try {
+                if (gallery.length > 0) {
+                    await supabase.from('gallery').upsert(gallery);
+                }
+                const ids = gallery.map(item => item.id);
+                if (ids.length > 0) {
+                    const idList = ids.map(id => `'${id}'`).join(',');
+                    await supabase.from('gallery').delete().filter('id', 'not.in', `(${idList})`);
+                } else {
+                    await supabase.from('gallery').delete().neq('id', '');
+                }
+            } catch (e) {
+                console.error("Failed to save gallery to Supabase:", e);
+            }
+        }
     }
 
     static getLeads() {
@@ -150,8 +208,79 @@ class Database {
         return data ? JSON.parse(data) : [];
     }
 
-    static saveLeads(leads) {
+    static async saveLeads(leads) {
         localStorage.setItem("prime_solar_leads", JSON.stringify(leads));
+        if (supabase && leads.length > 0) {
+            try {
+                const latestLead = leads[0];
+                await supabase.from('leads').insert({
+                    name: latestLead.name,
+                    phone: latestLead.phone,
+                    email: latestLead.email,
+                    message: latestLead.message,
+                    timestamp: latestLead.timestamp
+                });
+            } catch (e) {
+                console.error("Failed to save lead to Supabase:", e);
+            }
+        }
+    }
+
+    static async syncFromSupabase() {
+        if (!supabase) return;
+        try {
+            // Fetch Settings
+            const { data: settingsData, error: sErr } = await supabase.from('settings').select('*').eq('id', 'default').maybeSingle();
+            if (!sErr && settingsData) {
+                const { id, ...rest } = settingsData;
+                localStorage.setItem("prime_solar_settings", JSON.stringify(rest));
+            } else if (!settingsData) {
+                // Seed empty remote settings table
+                const currentSettings = Database.getSettings();
+                await supabase.from('settings').upsert({ id: 'default', ...currentSettings });
+            }
+
+            // Fetch Products
+            const { data: productsData, error: pErr } = await supabase.from('products').select('*');
+            if (!pErr && productsData && productsData.length > 0) {
+                const cleanProducts = productsData.map(({ created_at, ...rest }) => rest);
+                localStorage.setItem("prime_solar_products", JSON.stringify(cleanProducts));
+            } else if (!pErr && (!productsData || productsData.length === 0)) {
+                // Seed empty remote products table
+                const currentProducts = Database.getProducts();
+                if (currentProducts.length > 0) {
+                    await supabase.from('products').upsert(currentProducts);
+                }
+            }
+
+            // Fetch Gallery
+            const { data: galleryData, error: gErr } = await supabase.from('gallery').select('*');
+            if (!gErr && galleryData && galleryData.length > 0) {
+                const cleanGallery = galleryData.map(({ created_at, ...rest }) => rest);
+                localStorage.setItem("prime_solar_gallery", JSON.stringify(cleanGallery));
+            } else if (!gErr && (!galleryData || galleryData.length === 0)) {
+                // Seed empty remote gallery table
+                const currentGallery = Database.getGallery();
+                if (currentGallery.length > 0) {
+                    await supabase.from('gallery').upsert(currentGallery);
+                }
+            }
+
+            // Fetch Leads
+            const { data: leadsData, error: lErr } = await supabase.from('leads').select('*').order('created_at', { ascending: false });
+            if (!lErr && leadsData) {
+                const cleanLeads = leadsData.map(({ created_at, id, ...rest }) => rest);
+                localStorage.setItem("prime_solar_leads", JSON.stringify(cleanLeads));
+            }
+
+            // Re-render components with latest synchronized settings
+            renderPublicSite();
+            if (AuthManager.isLoggedIn()) {
+                renderAdminPanel();
+            }
+        } catch (err) {
+            console.error("Supabase Sync Failed:", err);
+        }
     }
 
     static restoreDefaults() {
@@ -226,6 +355,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Render landing page
     renderPublicSite();
+
+    // Sync from Supabase in the background if configured
+    if (supabase) {
+        Database.syncFromSupabase();
+    }
 });
 
 // 4. ROUTER CONTROLLER (SPA Navigation)
@@ -1306,8 +1440,16 @@ function renderAdminLeads() {
 function deleteLead(index) {
     if (confirm("Remove this client query log from the database?")) {
         const leads = Database.getLeads();
+        const leadToDelete = leads[index];
         leads.splice(index, 1);
         Database.saveLeads(leads);
+
+        if (supabase && leadToDelete) {
+            supabase.from('leads').delete().eq('name', leadToDelete.name).eq('timestamp', leadToDelete.timestamp)
+                .then(({ error }) => {
+                    if (error) console.error("Failed to delete lead from Supabase:", error);
+                });
+        }
 
         renderAdminLeads();
     }
