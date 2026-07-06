@@ -144,7 +144,8 @@ class Database {
         if (supabaseClient) {
             try {
                 const payload = { id: 'default', ...settings };
-                await supabaseClient.from('settings').upsert(payload);
+                const { error } = await supabaseClient.from('settings').upsert(payload);
+                if (error) throw error;
             } catch (e) {
                 console.error("Failed to save settings to Supabase:", e);
             }
@@ -161,14 +162,17 @@ class Database {
         if (supabaseClient) {
             try {
                 if (products.length > 0) {
-                    await supabaseClient.from('products').upsert(products);
+                    const { error } = await supabaseClient.from('products').upsert(products);
+                    if (error) throw error;
                 }
                 const ids = products.map(p => p.id);
                 if (ids.length > 0) {
                     const idList = ids.map(id => `'${id}'`).join(',');
-                    await supabaseClient.from('products').delete().filter('id', 'not.in', `(${idList})`);
+                    const { error: delErr } = await supabaseClient.from('products').delete().filter('id', 'not.in', `(${idList})`);
+                    if (delErr) throw delErr;
                 } else {
-                    await supabaseClient.from('products').delete().neq('id', '');
+                    const { error: delErr } = await supabaseClient.from('products').delete().neq('id', '');
+                    if (delErr) throw delErr;
                 }
             } catch (e) {
                 console.error("Failed to save products to Supabase:", e);
@@ -186,14 +190,17 @@ class Database {
         if (supabaseClient) {
             try {
                 if (gallery.length > 0) {
-                    await supabaseClient.from('gallery').upsert(gallery);
+                    const { error } = await supabaseClient.from('gallery').upsert(gallery);
+                    if (error) throw error;
                 }
                 const ids = gallery.map(item => item.id);
                 if (ids.length > 0) {
                     const idList = ids.map(id => `'${id}'`).join(',');
-                    await supabaseClient.from('gallery').delete().filter('id', 'not.in', `(${idList})`);
+                    const { error: delErr } = await supabaseClient.from('gallery').delete().filter('id', 'not.in', `(${idList})`);
+                    if (delErr) throw delErr;
                 } else {
-                    await supabaseClient.from('gallery').delete().neq('id', '');
+                    const { error: delErr } = await supabaseClient.from('gallery').delete().neq('id', '');
+                    if (delErr) throw delErr;
                 }
             } catch (e) {
                 console.error("Failed to save gallery to Supabase:", e);
@@ -211,13 +218,14 @@ class Database {
         if (supabaseClient && leads.length > 0) {
             try {
                 const latestLead = leads[0];
-                await supabaseClient.from('leads').insert({
+                const { error } = await supabaseClient.from('leads').insert({
                     name: latestLead.name,
                     phone: latestLead.phone,
                     email: latestLead.email,
                     message: latestLead.message,
                     timestamp: latestLead.timestamp
                 });
+                if (error) throw error;
             } catch (e) {
                 console.error("Failed to save lead to Supabase:", e);
             }
@@ -1022,12 +1030,41 @@ function initAdminPortal() {
         renderPublicSite();
     });
 
-    // Image Upload Handlers (converts file uploads into base64 strings)
+    // Image Upload Handlers (converts file uploads into base64 strings with resizing/compression to avoid storage quota issues)
     const fileReader = (file, imgElement, labelElement) => {
         const reader = new FileReader();
         reader.onload = (e) => {
-            imgElement.src = e.target.result;
-            imgElement.classList.remove("hidden");
+            const img = new Image();
+            img.onload = () => {
+                const canvas = document.createElement("canvas");
+                const MAX_WIDTH = 1200;
+                const MAX_HEIGHT = 800;
+                let width = img.width;
+                let height = img.height;
+
+                if (width > height) {
+                    if (width > MAX_WIDTH) {
+                        height *= MAX_WIDTH / width;
+                        width = MAX_WIDTH;
+                    }
+                } else {
+                    if (height > MAX_HEIGHT) {
+                        width *= MAX_HEIGHT / height;
+                        height = MAX_HEIGHT;
+                    }
+                }
+
+                canvas.width = width;
+                canvas.height = height;
+                const ctx = canvas.getContext("2d");
+                ctx.drawImage(img, 0, 0, width, height);
+
+                // Convert to compressed jpeg base64 (quality = 0.7)
+                const dataUrl = canvas.toDataURL("image/jpeg", 0.7);
+                imgElement.src = dataUrl;
+                imgElement.classList.remove("hidden");
+            };
+            img.src = e.target.result;
         };
         reader.readAsDataURL(file);
         if (labelElement) {
