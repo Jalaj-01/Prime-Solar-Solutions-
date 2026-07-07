@@ -52,14 +52,6 @@ class AuthManager {
         return { success: true };
     }
 
-    static loginWithGoogle(email) {
-        if (!AUTHORIZED_EMAILS.includes(email.toLowerCase())) {
-            return { success: false, message: "Access Denied: Account email is not authorized for staff access." };
-        }
-        sessionStorage.setItem("prime_solar_authenticated", "true");
-        sessionStorage.setItem("prime_solar_user", email);
-        return { success: true };
-    }
 
     static logout() {
         sessionStorage.removeItem("prime_solar_authenticated");
@@ -875,105 +867,8 @@ function renderPublicSite() {
 
 // 11. ADMIN PORTAL CONTROLLER
 function initAdminPortal() {
-    // 1. Authentication Tab Switching
-    const tabGoogleBtn = document.getElementById("btn-auth-tab-google");
-    const tabPassBtn = document.getElementById("btn-auth-tab-pass");
-    const panelGoogle = document.getElementById("auth-panel-google");
-    const panelPass = document.getElementById("auth-panel-pass");
+    // 1. Password Submit Sign-In Form Handler
     const authErrorMsg = document.getElementById("auth-error-msg");
-
-    tabGoogleBtn.addEventListener("click", () => {
-        tabGoogleBtn.classList.add("active");
-        tabPassBtn.classList.remove("active");
-        panelGoogle.classList.remove("hidden");
-        panelPass.classList.add("hidden");
-        authErrorMsg.classList.add("hidden");
-    });
-
-    tabPassBtn.addEventListener("click", () => {
-        tabPassBtn.classList.add("active");
-        tabGoogleBtn.classList.remove("active");
-        panelPass.classList.remove("hidden");
-        panelGoogle.classList.add("hidden");
-        authErrorMsg.classList.add("hidden");
-    });
-
-    // 2. Mock Google Sign-In Trigger
-    const btnGoogleOAuth = document.getElementById("btn-google-oauth");
-    const googleOauthPopup = document.getElementById("google-oauth-popup");
-    const btnGoogleClose = document.getElementById("btn-google-oauth-close");
-    const googleAccountItems = document.querySelectorAll(".google-account-item:not(#google-account-custom)");
-    const googleCustomItem = document.getElementById("google-account-custom");
-    const googleCustomInputPanel = document.getElementById("google-oauth-custom-input-panel");
-    const googleCustomEmailInput = document.getElementById("google-oauth-custom-email");
-    const btnGoogleCustomCancel = document.getElementById("btn-google-custom-cancel");
-    const btnGoogleCustomSubmit = document.getElementById("btn-google-custom-submit");
-
-    btnGoogleOAuth.addEventListener("click", () => {
-        googleOauthPopup.classList.remove("hidden");
-        googleCustomInputPanel.classList.add("hidden");
-        googleCustomEmailInput.value = "";
-    });
-
-    btnGoogleClose.addEventListener("click", () => {
-        googleOauthPopup.classList.add("hidden");
-    });
-
-    // Handle Google Account selection click
-    googleAccountItems.forEach(item => {
-        item.addEventListener("click", () => {
-            const email = item.getAttribute("data-email");
-            const result = AuthManager.loginWithGoogle(email);
-
-            googleOauthPopup.classList.add("hidden");
-
-            if (result.success) {
-                authErrorMsg.classList.add("hidden");
-                // Success: Reload routing to dashboard
-                window.location.hash = "#/admin";
-                renderPublicSite();
-                if (typeof window.handleRoute === "function") {
-                    window.handleRoute();
-                }
-            } else {
-                document.getElementById("auth-error-text").textContent = result.message;
-                authErrorMsg.classList.remove("hidden");
-            }
-        });
-    });
-
-    // Custom Google Account toggle
-    googleCustomItem.addEventListener("click", () => {
-        googleCustomInputPanel.classList.toggle("hidden");
-        googleCustomEmailInput.focus();
-    });
-
-    btnGoogleCustomCancel.addEventListener("click", () => {
-        googleCustomInputPanel.classList.add("hidden");
-        googleCustomEmailInput.value = "";
-    });
-
-    btnGoogleCustomSubmit.addEventListener("click", () => {
-        const email = googleCustomEmailInput.value.trim();
-        if (!email) return;
-
-        const result = AuthManager.loginWithGoogle(email);
-        googleOauthPopup.classList.add("hidden");
-
-        if (result.success) {
-            authErrorMsg.classList.add("hidden");
-            window.location.hash = "#/admin";
-            renderPublicSite();
-            if (typeof window.handleRoute === "function") {
-                window.handleRoute();
-            }
-        } else {
-            document.getElementById("auth-error-text").textContent = result.message;
-            authErrorMsg.classList.remove("hidden");
-        }
-    });
-
-    // 3. Password Submit Sign-In Form Handler
     const passwordLoginForm = document.getElementById("admin-password-login-form");
     passwordLoginForm.addEventListener("submit", (e) => {
         e.preventDefault();
